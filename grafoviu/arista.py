@@ -6,4 +6,7 @@ class Arista:
         self.__destino = destino
 
     def __str__(self):
-        return f"Arista: |{self.__origen}, {self.__destino}, {self.__peso}|"
+        return f"|{(self.__origen, self.__destino, self.__peso)}|"
+    
+    def get_arista(self):
+        return (self.__origen, self.__destino, self.__peso)
