@@ -20,6 +20,7 @@ def main():
     print("---------------------------------")
     
     grafo = GrafoMatrizAdyacencia("grafoviu/assets/grafo.txt")
+    print(grafo)
     
     arista_1 = Arista('d', 'a', 1) 
     arista_2 = Arista('d', 'b', 1) 

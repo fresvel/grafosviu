@@ -63,3 +63,15 @@ class GrafoMatrizAdyacencia(Grafo):
     def contiene_arista(self, arista):
         origen, destino, peso=arista.get_arista()
         return self.__grafo[self.__node_index[origen]][self.__node_index[destino]]!=0
+    
+    def __str__(self):
+        strgrafo="  "
+        for node in self.__nodes:
+            strgrafo+=f"{node} "
+        strgrafo+="\n"
+        for index, node in enumerate(self.__nodes):
+            strgrafo+=f"{node} "
+            for weight in self.__grafo[index]:
+                strgrafo+=f"{weight} "
+            strgrafo+="\n"
+        return strgrafo
