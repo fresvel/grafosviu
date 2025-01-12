@@ -41,3 +41,25 @@ class GrafoListasAdyacencia(Grafo):
         strgrafo+="}"  
         return strgrafo
     
+class GrafoMatrizAdyacencia(Grafo):
+    def __init__(self,path_file):
+        self.__nodes =set() 
+        with open(path_file, 'r') as file:
+            for line  in file:
+                line = line.strip()
+                if line:
+                    origen, destino, _ = line.split(' ')
+                    self.__nodes.add(origen)
+                    self.__nodes.add(destino)
+        self.__nodes=sorted(self.__nodes)
+        self.__node_index = {node: index for index, node in enumerate(self.__nodes)}
+        self.__grafo = [[0]*len(self.__nodes) for _ in range(len(self.__nodes))]  
+        super().__init__(path_file)
+
+    def aniadir_arista(self, arista):
+        origen, destino, peso = arista
+        self.__grafo[self.__node_index[origen]][self.__node_index[destino]] = peso
+
+    def contiene_arista(self, arista):
+        origen, destino, peso=arista.get_arista()
+        return self.__grafo[self.__node_index[origen]][self.__node_index[destino]]!=0
