@@ -111,7 +111,10 @@ El programa se ha desarrollado en un entornos linux y para su ejecución es nece
 
 ### Salida esperada
 
-```plaintext
+```bash
+(grafosviu) [fresvel@gns3 grafosviu]$ grafoviu
+Bienvenido a grafoviu!
+
 Grafo con listas de adyacencia:
 {
 a : [('b', 1), ('c', 3)]
