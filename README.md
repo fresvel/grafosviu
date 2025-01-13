@@ -108,3 +108,72 @@ El script principal ejecuta la función `main` al ser invocado, comenzando la ej
 Este documento proporciona una visión general de la librería **grafoviu** y su funcionalidad, permitiendo a los usuarios comprender cómo utilizarla para crear y manipular grafos.
 
 El programa se ha desarrollado en un entornos linux y para su ejecución es necesario utilizar `pipenv shell` junto a `pipenv install .`. Para el funcionamiento del programa se utiliza el archivo grafo.txt ubicado en assets por lo que para probar el código se debe ejecutar `grafoviu` desde la raiz del proyecto.
+
+### Salida esperada
+
+```plaintext
+Grafo con listas de adyacencia:
+{
+a : [('b', 1), ('c', 3)]
+b : [('e', 3)]
+c : [('a', 2), ('d', 1)]
+d : [('a', 1), ('e', 2), ('f', 1)]
+e : [('c', 3), ('f', 4)]
+f : [('g', 1)]
+g : [('b', 2)]
+}
+
+Grafo con matriz de adyacencia:
+  a b c d e f g 
+a 0 1 3 0 0 0 0 
+b 0 0 0 0 3 0 0 
+c 2 0 0 1 0 0 0 
+d 1 0 0 0 2 1 0 
+e 0 0 3 0 0 4 0 
+f 0 0 0 0 0 0 1 
+g 0 2 0 0 0 0 0 
+
+
+-----------------Testing Lists----------------
+Testing True cases...
+Arista |('a', 'b', 1)| correctamente encontrada en el grafo
+Arista |('a', 'c', 3)| correctamente encontrada en el grafo
+Arista |('b', 'e', 3)| correctamente encontrada en el grafo
+Arista |('c', 'a', 2)| correctamente encontrada en el grafo
+Arista |('c', 'd', 1)| correctamente encontrada en el grafo
+Arista |('d', 'a', 1)| correctamente encontrada en el grafo
+Arista |('d', 'e', 2)| correctamente encontrada en el grafo
+Arista |('d', 'f', 1)| correctamente encontrada en el grafo
+Arista |('e', 'c', 3)| correctamente encontrada en el grafo
+Arista |('e', 'f', 4)| correctamente encontrada en el grafo
+Arista |('f', 'g', 1)| correctamente encontrada en el grafo
+Arista |('g', 'b', 2)| correctamente encontrada en el grafo
+
+Testing False cases...
+Arista |('a', 'd', 5)| correctamente no encontrada en el grafo
+Arista |('b', 'f', 7)| correctamente no encontrada en el grafo
+Arista |('c', 'e', 4)| correctamente no encontrada en el grafo
+Arista |('d', 'g', 6)| correctamente no encontrada en el grafo
+Arista |('e', 'b', 2)| correctamente no encontrada en el grafo
+Arista |('f', 'a', 8)| correctamente no encontrada en el grafo
+Arista |('g', 'c', 9)| correctamente no encontrada en el grafo
+Arista |('a', 'f', 3)| correctamente no encontrada en el grafo
+Arista |('t', 'u', 2)| correctamente no encontrada en el grafo
+Arista |('k', 'y', 7)| correctamente no encontrada en el grafo
+Arista |('f', 'h', 1)| correctamente no encontrada en el grafo
+Arista |('h', 'd', 5)| correctamente no encontrada en el grafo
+
+-----------------Testing Matrices----------------
+Testing True cases...
+Arista |('a', 'b', 1)| correctamente encontrada en el grafo
+Arista |('a', 'c', 3)| correctamente encontrada en el grafo
+Arista |('b', 'e', 3)| correctamente encontrada en el grafo
+Arista |('c', 'a', 2)| correctamente encontrada en el grafo
+Arista |('c', 'd', 1)| correctamente encontrada en el grafo
+Arista |('d', 'a', 1)| correctamente encontrada en el grafo
+Arista |('d', 'e', 2)| correctamente encontrada en el grafo
+Arista |('d', 'f', 1)| correctamente encontrada en el grafo
+Arista |('e', 'c', 3)| correctamente encontrada en el grafo
+Arista |('e', 'f', 4)| correctamente encontrada en el grafo
+Arista |('f', 'g', 1)| correctamente encontrada en el grafo
+```
