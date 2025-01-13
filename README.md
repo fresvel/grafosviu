@@ -1,185 +1,108 @@
-# Código de `Grafoviu`
+# Librería grafoviu
 
-from abc import ABC
-from abc import abstractmethod
+Esta librería proporciona funcionalidades para la creación y manipulación de grafos, implementando dos representaciones principales: listas de adyacencia y matrices de adyacencia.
 
-class Grafo(ABC):
+## Módulos
 
-    def __init__(self, path_file):
-        self._nodes = set()
-        aristas = []
-        with open(path_file, 'r') as file:
-            for line in file:
-                line = line.strip()
-                if line:
-                    origen, destino, peso = line.split(' ')
-                    self._nodes.add(origen)
-                    self._nodes.add(destino)
-                    aristas.append((origen, destino, int(peso)))
-        self._nodes = sorted(self._nodes)
-        self._node_index = {node: index for index, node in enumerate(self._nodes)}
-        for arista in aristas:
-            self.aniadir_arista(arista)
-        
-    @abstractmethod
-    def aniadir_arista(self, arista):
-        pass
+La librería se compone de los siguientes módulos:
 
-    @abstractmethod
-    def contiene_arista(self, arista):
-        pass
+- **arista.py**: Define la clase `Arista` para representar las aristas del grafo.
+- **grafo.py**: Define las clases abstractas `Grafo` y las implementaciones concretas `GrafoListasAdyacencia` y `GrafoMatrizAdyacencia` para la representación de grafos.
 
+## Clase `Arista`
 
-class GrafoListasAdyacencia(Grafo):
-    def __init__(self, path_file):
-        self.__grafo = {}  
-        super().__init__(path_file)
-    
-    def aniadir_arista(self, arista):
-        origen, destino, peso = arista
-        self.__grafo.setdefault(origen, []).append((destino, peso))
+### Descripción
+Representa una arista en un grafo, con un nodo de origen, un nodo de destino y un peso asociado.
 
-    def contiene_arista(self, arista):
-        return (arista.destino, arista.peso) in self.__grafo.get(arista.origen, [])
+### Atributos
 
-    def __str__(self):
-        strgrafo = "{\n"
-        for key in self.__grafo.keys():
-            strgrafo += f"{key} : {self.__grafo[key]}\n"
-        strgrafo += "}"  
-        return strgrafo
+- `__origen`: El nodo de origen de la arista.
+- `__destino`: El nodo de destino de la arista.
+- `__peso`: El peso asociado a la arista.
 
+### Métodos
 
-class GrafoMatrizAdyacencia(Grafo):
-    def __init__(self, path_file):
-        self.__grafo = None  
-        super().__init__(path_file)
+- `__init__(self, origen, destino, peso)`: Constructor de la clase. Inicializa una arista con su origen, destino y peso.
+- `__str__(self)`: Retorna una representación en cadena de la arista en el formato `|(origen, destino, peso)|`.
+- `get_arista(self)`: Retorna una tupla con el origen, destino y peso de la arista.
+- `peso(self)`: Propiedad que devuelve el peso de la arista.
+- `origen(self)`: Propiedad que devuelve el origen de la arista.
+- `destino(self)`: Propiedad que devuelve el destino de la arista.
 
-    def aniadir_arista(self, arista):
-        if self.__grafo is None:
-            self.__grafo = [[0] * len(self._nodes) for _ in range(len(self._nodes))]
-        origen, destino, peso = arista
-        self.__grafo[self._node_index[origen]][self._node_index[destino]] = peso
+## Clase abstracta `Grafo`
 
-    def contiene_arista(self, arista):
-        origen_idx = self._node_index.get(arista.origen)
-        destino_idx = self._node_index.get(arista.destino)
-    
-        if origen_idx is not None and destino_idx is not None:
-            return self.__grafo[origen_idx][destino_idx] != 0
-        else:
-            return False
-    
-    def __str__(self):
-        strgrafo = "  "
-        for node in self._nodes:
-            strgrafo += f"{node} "
-        strgrafo += "\n"
-        for index, node in enumerate(self._nodes):
-            strgrafo += f"{node} "
-            for weight in self.__grafo[index]:
-                strgrafo += f"{weight} "
-            strgrafo += "\n"
-        return strgrafo
+### Descripción
+Define la interfaz común para las representaciones de grafos. No puede ser instanciada directamente.
 
+### Atributos
 
-## `arista.py`
+- `__nodes`: Un conjunto de nodos únicos presentes en el grafo.
+- `__node_index`: Diccionario que asigna un índice a cada nodo del grafo.
 
-```python
-class Arista:
-    def __init__(self, origen, destino, peso):
-        self.__peso = peso
-        self.__origen = origen
-        self.__destino = destino
+### Métodos
 
-    def __str__(self):
-        return f"|{(self.__origen, self.__destino, self.__peso)}|"
-    
-    def get_arista(self):
-        return (self.__origen, self.__destino, self.__peso)
+- `__init__(self, path_file)`: Constructor de la clase abstracta. Lee un archivo de texto donde cada línea representa una arista en el formato "origen destino peso", inicializa el conjunto de nodos, y llama a `aniadir_arista` para cada arista.
+- `aniadir_arista(self, arista)`: Método abstracto para añadir una arista al grafo. Debe ser implementado por las clases concretas.
+- `contiene_arista(self, arista)`: Método abstracto para verificar si una arista existe en el grafo. Debe ser implementado por las clases concretas.
 
-    @property
-    def peso(self):
-        return self.__peso
-    
-    @property
-    def origen(self):
-        return(self.__origen)
-    
-    @property
-    def destino(self):
-        return(self.__destino)
+## Clase `GrafoListasAdyacencia`
 
+### Descripción
+Implementa la representación de un grafo usando listas de adyacencia.
 
+### Atributos
 
-import sys
-from grafoviu.arista import Arista
-from grafoviu.grafo import GrafoListasAdyacencia
-from grafoviu.grafo import GrafoMatrizAdyacencia
+- `__grafo`: Un diccionario donde las claves son los nodos de origen y los valores son listas de tuplas `(destino, peso)` que representan las aristas salientes del nodo origen.
 
-def main():
-    print("Bienvenido a grafoviu!")
-    
-    grafo_lista = GrafoListasAdyacencia("grafoviu/assets/grafo.txt")
-    print(grafo_lista)
-    
-    grafo_matriz = GrafoMatrizAdyacencia("grafoviu/assets/grafo.txt")
-    print(grafo_matriz)
-    
-    print("-----------------Testing Lists----------------")
+### Métodos
 
-    aristas_true = [
-        Arista("a", "b", 1),
-        Arista("a", "c", 3),
-        Arista("b", "e", 3),
-        Arista("c", "a", 2),
-        Arista("c", "d", 1),
-        Arista("d", "a", 1),
-        Arista("d", "e", 2),
-        Arista("d", "f", 1),
-        Arista("e", "c", 3),
-        Arista("e", "f", 4),
-        Arista("f", "g", 1),
-        Arista("g", "b", 2)
-    ]
+- `__init__(self, path_file)`: Constructor de la clase. Inicializa el grafo llamando al constructor de la clase padre `Grafo` e inicializando el diccionario que representa el grafo con listas de adyacencia.
+- `aniadir_arista(self, arista)`: Añade una arista al grafo. Agrega el destino y peso a la lista de adyacencia del nodo origen.
+- `contiene_arista(self, arista)`: Verifica si una arista existe en el grafo. Retorna `True` si el destino y el peso de la arista se encuentran en la lista de adyacencia del origen, y `False` en caso contrario.
+- `__str__(self)`: Retorna una representación en cadena del grafo en el formato `{nodo: [(destino, peso), ...], ...}`.
 
-    aristas_false = [
-        Arista("a", "d", 5),
-        Arista("b", "f", 7),
-        Arista("c", "e", 4),
-        Arista("d", "g", 6),
-        Arista("e", "b", 2),
-        Arista("f", "a", 8),
-        Arista("g", "c", 9),
-        Arista("a", "f", 3),
-        Arista("t", "u", 2),
-        Arista("k", "y", 7),
-        Arista("f", "h", 1),
-        Arista("h", "d", 5)
-    ]
+## Clase `GrafoMatrizAdyacencia`
 
-    print("Testing True cases...")
-    for arista in aristas_true:
-        buscar_arista(grafo_lista, arista)
-    
-    print("Testing False cases...")
-    for arista in aristas_false:
-        buscar_arista(grafo_lista, arista)
+### Descripción
+Implementa la representación de un grafo usando una matriz de adyacencia.
 
-    print("-----------------Testing Matrices----------------")
-    print("Testing True cases...")
-    for arista in aristas_true:
-        buscar_arista(grafo_matriz, arista)
-    
-    print("Testing False cases...")
-    for arista in aristas_false:
-        buscar_arista(grafo_matriz, arista)
-    
-def buscar_arista(grafo, arista):
-    if grafo.contiene_arista(arista):
-        print("Arista encontrada en el grafo")
-    else:
-        print("Arista no encontrada en el grafo")
+### Atributos
 
-if __name__ == "__main__":
-    sys.exit(main())
+- `__grafo`: Una matriz bidimensional que representa las conexiones entre nodos. Cada celda `[i][j]` contiene el peso de la arista entre el nodo con índice `i` y el nodo con índice `j`. `0` indica que no hay arista.
+- `__node_index`: Diccionario que mapea nodos a índices de la matriz.
+
+### Métodos
+
+- `__init__(self, path_file)`: Constructor de la clase. Inicializa el grafo llamando al constructor de la clase padre `Grafo` e inicializa la matriz a `None`.
+- `aniadir_arista(self, arista)`: Añade una arista al grafo. Si la matriz aún no ha sido inicializada, la crea. Luego, establece el peso en la celda correspondiente.
+- `contiene_arista(self, arista)`: Verifica si una arista existe en el grafo. Retorna `True` si el peso de la arista en la matriz es diferente de `0`, y `False` en caso contrario.
+- `__str__(self)`: Retorna una representación en cadena de la matriz del grafo, mostrando los nodos en la primera fila y columna, y los pesos de las aristas en la matriz.
+
+## Función `probar_aristas`
+
+### Descripción
+Función para probar la funcionalidad de `contiene_arista` de un grafo con una lista de aristas, ya sea para casos donde deberían existir (caso="True") o donde no deberían existir (caso="False").
+
+### Parámetros
+
+- `grafo`: Instancia de un grafo (`GrafoListasAdyacencia` o `GrafoMatrizAdyacencia`).
+- `aristas`: Lista de objetos `Arista` para probar.
+- `caso`: Cadena que puede ser `"True"` o `"False"` para indicar qué tipo de prueba se realiza.
+
+## Función `main`
+
+### Descripción
+Función principal que:
+
+- Crea instancias de `GrafoListasAdyacencia` y `GrafoMatrizAdyacencia` a partir del archivo `grafo.txt`.
+- Define listas de aristas `aristas_true` (que deben existir en el grafo) y `aristas_false` (que no deben existir).
+- Llama a la función `probar_aristas` para verificar la correcta implementación de la función `contiene_arista`.
+- Maneja excepciones `FileNotFoundError` si el archivo `grafo.txt` no se encuentra, y `Exception` para errores inesperados.
+
+## Ejecución del programa
+
+El script principal ejecuta la función `main` al ser invocado, comenzando la ejecución de pruebas de creación de grafos y validación de la existencia de aristas.
+
+---
+
+Este documento proporciona una visión general de la librería **grafoviu** y su funcionalidad, permitiendo a los usuarios comprender cómo utilizarla para crear y manipular grafos.
