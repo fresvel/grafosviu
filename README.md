@@ -106,3 +106,5 @@ El script principal ejecuta la función `main` al ser invocado, comenzando la ej
 ---
 
 Este documento proporciona una visión general de la librería **grafoviu** y su funcionalidad, permitiendo a los usuarios comprender cómo utilizarla para crear y manipular grafos.
+
+El programa se ha desarrollado en un entornos linux y para su ejecución es necesario utilizar `pipenv shell` junto a `pipenv install .`. Para el funcionamiento del programa se utiliza el archivo grafo.txt ubicado en assets por lo que para probar el código se debe ejecutar `grafoviu` desde la raiz del proyecto.
